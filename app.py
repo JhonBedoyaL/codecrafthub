@@ -7,7 +7,7 @@ import threading
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 
 
 app = Flask(__name__)
@@ -130,6 +130,12 @@ try:
 except CourseFileError as error:
     # Keep the API available so later requests can return a JSON file error.
     app.logger.error("%s", error)
+
+
+@app.route("/", methods=["GET"])
+def dashboard():
+    """Serve the single-file course management dashboard."""
+    return send_from_directory(app.root_path, "index.html")
 
 
 @app.route("/api/courses", methods=["POST"])
